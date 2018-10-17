@@ -6,17 +6,21 @@
 #include <sstream>
 #include <string>
 
-class cli_parser {
+class cli_parser
+{
 public:
-  cli_parser(int argc, char *argv[]) {
+  cli_parser(int argc, char *argv[])
+  {
     auto i = argc - 1;
-    while (i) {
+    while (i)
+    {
       std::string key, val;
-      if (argv[i][0] == '-') // flaga
+      if (argv[i][0] == '-' && !isdigit(argv[i][1])) // flaga
       {
         key = argv[i];
         val = "1";
-      } else // zmienna
+      }
+      else // zmienna
       {
         key = argv[i - 1];
         val = argv[i--];
@@ -26,10 +30,12 @@ public:
     }
   }
 
-  template <typename T> T get(std::string key) {
-    if (!m.count("-" + key)) {
-      std::cerr << "wrong key: " << key << std::endl;
-      exit(1);
+  template <typename T = int>
+  T get(std::string key)
+  {
+    if (!m.count("-" + key))
+    {
+      throw std::runtime_error("missing key: -" + key);
     }
     std::stringstream ss(m["-" + key]);
     T result;
@@ -37,16 +43,22 @@ public:
     return result;
   }
 
-  template <typename T> T get(std::string key, T default_value) {
-    if (m.count("-" + key))
-      return get<T>(key);
-    else
-      return default_value;
+  template <typename T>
+  T get(std::string key, T default_value)
+  {
+    return m.count("-" + key) ? get<T>(key) : default_value;
   }
 
-  bool get_flag(std::string key) { return get<bool>(key, false); }
+  // -fconcepts ?
+  // decltype(auto) get(std::string key, auto default_value)
+  // {
+  //   if (m.count("-" + key))
+  //     return get<decltype(default_value)>(key);
+  //   else
+  //     return default_value;
+  // }
 
-  // size_t is_key(std::string key) { return m.count("-" + key); }
+  bool get_flag(std::string key) { return get<bool>(key, false); }
 
 private:
   std::map<std::string, std::string> m;
