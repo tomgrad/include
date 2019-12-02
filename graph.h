@@ -15,6 +15,7 @@ struct Graph
   void add_edge(const size_t, const size_t);
   void add_directed_edge(const size_t, const size_t);
   void reset(const size_t);
+  bool is_connected(const size_t, const size_t);
   std::vector<vert_vec> A; // adjacency list
 };
 

@@ -20,6 +20,11 @@ void Graph::reset(const size_t size = 0)
     A.resize(size);
 }
 
+bool Graph::is_connected(const size_t i, const size_t j)
+{
+    return std::find(begin(A[i]), end(A[i]), j) != end(A[i]);
+}
+
 std::ostream &operator<<(std::ostream &os, const Graph &G)
 {
     unsigned n = 0;
